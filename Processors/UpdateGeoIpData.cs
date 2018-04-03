@@ -25,6 +25,7 @@ namespace GeoIpFallback.Processors
 
             if (Tracker.Current.Session.Interaction.CustomValues.ContainsKey(stringIp) && UpdateGeoIpDataOverrided(ip))
             {
+                Sitecore.Diagnostics.Log.Debug("GeoIPFallback: the fallback version is overrided by data from Sitecore GEO IP service.", this);
                 Tracker.Current.Session.Interaction.CustomValues.Remove(stringIp);
                 return;
             }
@@ -33,49 +34,50 @@ namespace GeoIpFallback.Processors
             {
                 try
                 {
+                    Sitecore.Diagnostics.Log.Info("GeoIPFallback: Current location was not resolved by Sitecore GEO IP service; Local MaxMind database is requested. IP: " + stringIp, this);
+
                     var whoIsInformation = new WhoIsInformation();
 
-                    var geoLitePath = Settings.GetSetting("GeoRedirect.DatabaseLocation.GeoLiteCity",
-                        "~/app_data/GeoLiteCity.dat");
+                    var geoLitePath = Settings.GetSetting("GeoRedirect.DatabaseLocation.GeoLiteCity", "~/app_data/GeoLiteCity.dat");
 
-                    var lookUpService = new LookupService(HostingEnvironment.MapPath(geoLitePath),
-                        LookupService.GEOIP_STANDARD);
+                    var lookUpService = new LookupService(HostingEnvironment.MapPath(geoLitePath), LookupService.GEOIP_STANDARD);
                     var location = lookUpService.getLocation(ip);
 
-                    Sitecore.Diagnostics.Log.Info(
-                        "UpdateGeoIpData: Local MaxMind database was requested. IP: " + stringIp, this);
+                    
 
                     if (location != null)
                     {
-                        Sitecore.Diagnostics.Log.Info(
-                            "UpdateGeoIpData: current location was resolved by local MaxMind database.", this);
+                        Sitecore.Diagnostics.Log.Info("GeoIPFallback: current location was resolved by local MaxMind database.", this);
+
                         whoIsInformation.Country = location.countryCode ?? string.Empty;
-                        Sitecore.Diagnostics.Log.Debug("UpdateGeoIpData: Country: " + whoIsInformation.Country, this);
+                        Sitecore.Diagnostics.Log.Debug("GeoIPFallback: Country: " + whoIsInformation.Country, this);
+
                         whoIsInformation.Region = location.regionName ?? string.Empty;
-                        Sitecore.Diagnostics.Log.Debug("UpdateGeoIpData: Region: " + whoIsInformation.Region, this);
+                        Sitecore.Diagnostics.Log.Debug("GeoIPFallback: Region: " + whoIsInformation.Region, this);
+
                         whoIsInformation.City = location.city ?? string.Empty;
-                        Sitecore.Diagnostics.Log.Debug("UpdateGeoIpData: City: " + whoIsInformation.City, this);
+                        Sitecore.Diagnostics.Log.Debug("GeoIPFallback: City: " + whoIsInformation.City, this);
+
                         whoIsInformation.PostalCode = location.postalCode ?? string.Empty;
-                        Sitecore.Diagnostics.Log.Debug("UpdateGeoIpData: Postal Code: " + whoIsInformation.PostalCode,
-                            this);
+                        Sitecore.Diagnostics.Log.Debug("GeoIPFallback: Postal Code: " + whoIsInformation.PostalCode, this);
+
                         whoIsInformation.Latitude = location.latitude;
-                        Sitecore.Diagnostics.Log.Debug("UpdateGeoIpData: Latitude: " + whoIsInformation.Latitude, this);
+                        Sitecore.Diagnostics.Log.Debug("GeoIPFallback: Latitude: " + whoIsInformation.Latitude, this);
+
                         whoIsInformation.Longitude = location.longitude;
-                        Sitecore.Diagnostics.Log.Debug("UpdateGeoIpData: Longitude: " + whoIsInformation.Longitude,
-                            this);
-                        whoIsInformation.MetroCode =
-                            location.metro_code <= 0 ? string.Empty : location.metro_code.ToString();
-                        Sitecore.Diagnostics.Log.Debug("UpdateGeoIpData: Metro Code: " + whoIsInformation.MetroCode,
-                            this);
-                        whoIsInformation.AreaCode =
-                            location.area_code <= 0 ? string.Empty : location.area_code.ToString();
-                        Sitecore.Diagnostics.Log.Debug("UpdateGeoIpData: Area Code: " + whoIsInformation.AreaCode,
-                            this);
+                        Sitecore.Diagnostics.Log.Debug("GeoIPFallback: Longitude: " + whoIsInformation.Longitude, this);
+
+                        whoIsInformation.MetroCode = location.metro_code <= 0 ? string.Empty : location.metro_code.ToString();
+                        Sitecore.Diagnostics.Log.Debug("GeoIPFallback: Metro Code: " + whoIsInformation.MetroCode, this);
+
+                        whoIsInformation.AreaCode = location.area_code <= 0 ? string.Empty : location.area_code.ToString();
+                        Sitecore.Diagnostics.Log.Debug("GeoIPFallback: Area Code: " + whoIsInformation.AreaCode, this);
+
                     }
                     else
                     {
                         Sitecore.Diagnostics.Log.Info(
-                            "UpdateGeoIpData: current location was not resolved by local MaxMind database.", this);
+                            "GeoIPFallback: current location was not resolved by local MaxMind database.", this);
                         whoIsInformation.BusinessName = "Not Available";
                     }
 
