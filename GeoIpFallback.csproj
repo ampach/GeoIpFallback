@@ -61,6 +61,7 @@
   <ItemGroup />
   <ItemGroup>
     <None Include="App_Config\Include\GeoIpFallback\GeoIpFallback.Core.config" />
+    <None Include="App_Data\GeoLiteCity.dat" />
     <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

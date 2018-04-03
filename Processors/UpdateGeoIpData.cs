@@ -31,35 +31,62 @@ namespace GeoIpFallback.Processors
 
             if (!Tracker.Current.Session.Interaction.UpdateGeoIpData())
             {
-                var whoIsInformation = new WhoIsInformation();
-
-                var geoLitePath = Settings.GetSetting("GeoRedirect.DatabaseLocation.GeoLiteCity", "~/app_data/GeoLiteCity.dat");
-
-                var lookUpService = new LookupService(HostingEnvironment.MapPath(geoLitePath), LookupService.GEOIP_STANDARD);
-                var location = lookUpService.getLocation(ip);
-
-                Sitecore.Diagnostics.Log.Info("UpdateGeoIpData: Local MaxMind database was requested. IP: " + stringIp, this);
-
-                if (location != null)
+                try
                 {
-                    Sitecore.Diagnostics.Log.Info("UpdateGeoIpData: current location was resolved by local MaxMind database.", this);
-                    whoIsInformation.Country = location.countryCode ?? string.Empty;
-                    whoIsInformation.Region = location.regionName ?? string.Empty;
-                    whoIsInformation.City = location.city ?? string.Empty;
-                    whoIsInformation.PostalCode = location.postalCode ?? string.Empty;
-                    whoIsInformation.Latitude = location.latitude;
-                    whoIsInformation.Longitude = location.longitude;
-                    whoIsInformation.MetroCode = location.metro_code <= 0 ? string.Empty : location.metro_code.ToString();
-                    whoIsInformation.AreaCode = location.area_code <= 0 ? string.Empty : location.area_code.ToString();
-                }
-                else
-                {
-                    Sitecore.Diagnostics.Log.Info("UpdateGeoIpData: current location was not resolved by local MaxMind database.", this);
-                    whoIsInformation.BusinessName = "Not Available";
-                }
+                    var whoIsInformation = new WhoIsInformation();
 
-                Tracker.Current.Session.Interaction.SetGeoData(whoIsInformation);
-                Tracker.Current.Session.Interaction.CustomValues.Add(stringIp, whoIsInformation);
+                    var geoLitePath = Settings.GetSetting("GeoRedirect.DatabaseLocation.GeoLiteCity",
+                        "~/app_data/GeoLiteCity.dat");
+
+                    var lookUpService = new LookupService(HostingEnvironment.MapPath(geoLitePath),
+                        LookupService.GEOIP_STANDARD);
+                    var location = lookUpService.getLocation(ip);
+
+                    Sitecore.Diagnostics.Log.Info(
+                        "UpdateGeoIpData: Local MaxMind database was requested. IP: " + stringIp, this);
+
+                    if (location != null)
+                    {
+                        Sitecore.Diagnostics.Log.Info(
+                            "UpdateGeoIpData: current location was resolved by local MaxMind database.", this);
+                        whoIsInformation.Country = location.countryCode ?? string.Empty;
+                        Sitecore.Diagnostics.Log.Debug("UpdateGeoIpData: Country: " + whoIsInformation.Country, this);
+                        whoIsInformation.Region = location.regionName ?? string.Empty;
+                        Sitecore.Diagnostics.Log.Debug("UpdateGeoIpData: Region: " + whoIsInformation.Region, this);
+                        whoIsInformation.City = location.city ?? string.Empty;
+                        Sitecore.Diagnostics.Log.Debug("UpdateGeoIpData: City: " + whoIsInformation.City, this);
+                        whoIsInformation.PostalCode = location.postalCode ?? string.Empty;
+                        Sitecore.Diagnostics.Log.Debug("UpdateGeoIpData: Postal Code: " + whoIsInformation.PostalCode,
+                            this);
+                        whoIsInformation.Latitude = location.latitude;
+                        Sitecore.Diagnostics.Log.Debug("UpdateGeoIpData: Latitude: " + whoIsInformation.Latitude, this);
+                        whoIsInformation.Longitude = location.longitude;
+                        Sitecore.Diagnostics.Log.Debug("UpdateGeoIpData: Longitude: " + whoIsInformation.Longitude,
+                            this);
+                        whoIsInformation.MetroCode =
+                            location.metro_code <= 0 ? string.Empty : location.metro_code.ToString();
+                        Sitecore.Diagnostics.Log.Debug("UpdateGeoIpData: Metro Code: " + whoIsInformation.MetroCode,
+                            this);
+                        whoIsInformation.AreaCode =
+                            location.area_code <= 0 ? string.Empty : location.area_code.ToString();
+                        Sitecore.Diagnostics.Log.Debug("UpdateGeoIpData: Area Code: " + whoIsInformation.AreaCode,
+                            this);
+                    }
+                    else
+                    {
+                        Sitecore.Diagnostics.Log.Info(
+                            "UpdateGeoIpData: current location was not resolved by local MaxMind database.", this);
+                        whoIsInformation.BusinessName = "Not Available";
+                    }
+
+                    Tracker.Current.Session.Interaction.SetGeoData(whoIsInformation);
+                    Tracker.Current.Session.Interaction.CustomValues.Add(stringIp, whoIsInformation);
+                }
+                catch (Exception ex)
+                {
+                    Sitecore.Diagnostics.Log.Error("UpdateGeoIpData: Something was wrong.", this);
+                    Sitecore.Diagnostics.Log.Error("Exception:", ex, this);
+                }
             }
         }
 
