@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Net;
 using System.Web.Hosting;
+using GeoIpFallback.Mock;
 using GeoIpFallback.Providers;
 using MaxMind.GeoIP;
 using MaxMind.GeoIP2;
@@ -14,6 +15,25 @@ namespace GeoIpFallback.Processors
 {
     public class UpdateGeoIpData : StartTrackingProcessor
     {
+        private const string CustomValuesKey = "GeoRedirect.Mocks.Enabled";
+
+        private bool IsMockEnabled
+        {
+            get
+            {
+                if (Tracker.Current.Session.Interaction.CustomValues.ContainsKey(CustomValuesKey))
+                {
+                    return (bool)Tracker.Current.Session.Interaction.CustomValues[CustomValuesKey];
+                }
+
+                var isEnabled = Settings.GetBoolSetting("GeoRedirect.Mocks.Enabled", false);
+
+                Tracker.Current.Session.Interaction.CustomValues.Add(CustomValuesKey, isEnabled);
+
+                return isEnabled;
+            }
+        }
+
         public override void Process(StartTrackingArgs args)
         {
             Sitecore.Diagnostics.Assert.IsNotNull(Tracker.Current, "Tracker.Current is not initialized");
@@ -21,6 +41,13 @@ namespace GeoIpFallback.Processors
 
             if (Tracker.Current.Session.Interaction == null)
                 return;
+
+            if (IsMockEnabled)
+            {
+                var mock = MockLocationFallbackManager.MockLocationFallbackProvider.GetMockCurrentLocation();
+            }
+
+            
 
             var ip = GeoIpManager.IpHashProvider.ResolveIpAddress(Tracker.Current.Session.Interaction.Ip);
             var stringIp = ip.ToString();

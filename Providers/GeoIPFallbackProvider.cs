@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Specialized;
 using System.Net;
 using System.Web.Hosting;
 using MaxMind.GeoIP;
@@ -9,13 +10,26 @@ namespace GeoIpFallback.Providers
 {
     public class GeoIPFallbackProvider : LocationFallbackProviderBase
     {
+        private string _databasePath;
+        public override void Initialize(string name, NameValueCollection config)
+        {
+            string databasePath = config["database"];
+            if (!string.IsNullOrEmpty(databasePath))
+            {
+                this._databasePath = databasePath;
+            }
+            else
+            {
+                this._databasePath = "~/app_data/GeoLiteCity.dat";
+            }
+            base.Initialize(name, config);
+        }
+
         public override WhoIsInformation Resolve(IPAddress ip)
         {
             var whoIsInformation = new WhoIsInformation();
 
-            var geoLitePath = Settings.GetSetting("GeoRedirect.DatabaseLocation.GeoLiteCity", "~/app_data/GeoLiteCity.dat");
-
-            var lookUpService = new LookupService(HostingEnvironment.MapPath(geoLitePath), LookupService.GEOIP_STANDARD);
+            var lookUpService = new LookupService(HostingEnvironment.MapPath(_databasePath), LookupService.GEOIP_STANDARD);
             var location = lookUpService.getLocation(ip);
 
 

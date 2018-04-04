@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Specialized;
 using System.Net;
 using MaxMind.GeoIP2;
 using Sitecore.Analytics.Model;
@@ -8,12 +9,26 @@ namespace GeoIpFallback.Providers
 {
     public class GeoIP2FallbackProvider : LocationFallbackProviderBase
     {
+        private string _databasePath;
+        public override void Initialize(string name, NameValueCollection config)
+        {
+            string databasePath = config["database"];
+            if (!string.IsNullOrEmpty(databasePath))
+            {
+                this._databasePath = databasePath;
+            }
+            else
+            {
+                this._databasePath = "~/app_data/GeoLite2-City.mmdb";
+            }
+            base.Initialize(name, config);
+        }
+
         public override WhoIsInformation Resolve(IPAddress ip)
         {
-            var geoLite2Path = Settings.GetSetting("GeoRedirect.DatabaseLocation.GeoLite2City", "~/app_data/GeoLite2-City.mmdb");
             var whoIsInformation = new WhoIsInformation();
 
-            using (var reader = new DatabaseReader(geoLite2Path))
+            using (var reader = new DatabaseReader(_databasePath))
             {
                 var city = reader.City(ip);
 

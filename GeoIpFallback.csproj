@@ -69,6 +69,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Mock\MockLocationFallbackManager.cs" />
+    <Compile Include="Mock\MockLocationFallbackProviderBase.cs" />
+    <Compile Include="Mock\MockLocationFallbackProviderCollection.cs" />
+    <Compile Include="Mock\SitecoreMockLocationProvider.cs" />
     <Compile Include="Processors\UpdateGeoIpData.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Providers\GeoIP2FallbackProvider.cs" />
