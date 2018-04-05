@@ -1,10 +1,7 @@
 ﻿using System;
 using System.Net;
-using System.Web.Hosting;
 using GeoIpFallback.Mock;
 using GeoIpFallback.Providers;
-using MaxMind.GeoIP;
-using MaxMind.GeoIP2;
 using Sitecore.Analytics;
 using Sitecore.Analytics.Lookups;
 using Sitecore.Analytics.Model;
@@ -15,7 +12,7 @@ namespace GeoIpFallback.Processors
 {
     public class UpdateGeoIpData : StartTrackingProcessor
     {
-        private const string CustomValuesKey = "GeoRedirect.Mocks.Enabled";
+        private const string CustomValuesKey = "GeoIpFallback.Mocks.Enabled";
 
         private bool IsMockEnabled
         {
@@ -26,7 +23,7 @@ namespace GeoIpFallback.Processors
                     return (bool)Tracker.Current.Session.Interaction.CustomValues[CustomValuesKey];
                 }
 
-                var isEnabled = Settings.GetBoolSetting("GeoRedirect.Mocks.Enabled", false);
+                var isEnabled = Settings.GetBoolSetting("GeoIpFallback.Mocks.Enabled", false);
 
                 Tracker.Current.Session.Interaction.CustomValues.Add(CustomValuesKey, isEnabled);
 
@@ -44,10 +41,10 @@ namespace GeoIpFallback.Processors
 
             if (IsMockEnabled)
             {
-                var mock = MockLocationFallbackManager.MockLocationFallbackProvider.GetMockCurrentLocation();
+                var mockWhoIsInformation = MockLocationFallbackManager.MockLocationFallbackProvider.GetMockCurrentLocation();
+                Tracker.Current.Session.Interaction.SetGeoData(mockWhoIsInformation);
+                return;
             }
-
-            
 
             var ip = GeoIpManager.IpHashProvider.ResolveIpAddress(Tracker.Current.Session.Interaction.Ip);
             var stringIp = ip.ToString();

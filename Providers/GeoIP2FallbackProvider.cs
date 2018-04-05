@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Specialized;
 using System.Net;
+using System.Web.Hosting;
 using MaxMind.GeoIP2;
 using Sitecore.Analytics.Model;
 using Sitecore.Configuration;
@@ -28,7 +29,7 @@ namespace GeoIpFallback.Providers
         {
             var whoIsInformation = new WhoIsInformation();
 
-            using (var reader = new DatabaseReader(_databasePath))
+            using (var reader = new DatabaseReader(HostingEnvironment.MapPath(_databasePath)))
             {
                 var city = reader.City(ip);
 

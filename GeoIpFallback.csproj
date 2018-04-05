@@ -69,6 +69,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Constants.cs" />
     <Compile Include="Mock\MockLocationFallbackManager.cs" />
     <Compile Include="Mock\MockLocationFallbackProviderBase.cs" />
     <Compile Include="Mock\MockLocationFallbackProviderCollection.cs" />
