@@ -20,7 +20,7 @@ Local database based location resolving for the first request starts to work imm
 If you are developer or QA engineer, you sometimes need to look at a site behavior if it was located in different location. For example in case when you want to check how a page will look with applied personalization based on the current country. The module allows to do that in a few steps:
 
 1. Set `true` value for the `GeoIpFallback.Mocks.Enabled` setting in the `GeoIpFallback.Core.config`
-2. Navigate to `/sitecore/system/Modules/GeoIP Fallback/New GepIP Manager` item in sitecore and choose current location.
+2. Navigate to `/sitecore/system/Modules/GeoIP Fallback/New GepIP Manager` item in sitecore and choose current location:
 
 ![Set fake location](https://user-images.githubusercontent.com/1925984/40304688-5df75f90-5d00-11e8-91ba-1a3ded1414ae.png)
 
