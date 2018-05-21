@@ -22,7 +22,7 @@ If you are developer or QA engineer, you sometimes need to look at a site behavi
 1. Set `true` value for the `GeoIpFallback.Mocks.Enabled` setting in the `GeoIpFallback.Core.config`
 2. Navigate to `/sitecore/system/Modules/GeoIP Fallback/New GepIP Manager` item in sitecore and choose current location.
 
-[IMAGE HERE]
+![Set fake location](https://user-images.githubusercontent.com/1925984/40304688-5df75f90-5d00-11e8-91ba-1a3ded1414ae.png)
 
 Extra location can be added under New GeoIP Manager with any information that you want to mock.
 
