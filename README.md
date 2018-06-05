@@ -9,7 +9,7 @@ The **GeoIP Fallback** is a simple Sitcore module that improves a current locati
 - Resolving current location for the first request based on the local MaxMind database
 - Mock current location for development machine
 
-Sitecore module can be downloaded by the following link: [GeoIP Fallback Module](https://github.com/ampach/GeoIpFallback/Module/GeoIP Fallback-1.0.zip) 
+Sitecore module can be downloaded by the following link: [GeoIP Fallback Module](https://github.com/ampach/GeoIpFallback/raw/master/Module/GeoIP%20Fallback-1.0.zip) 
 
 # Resolving current location for the first request
 
