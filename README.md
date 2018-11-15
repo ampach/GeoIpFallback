@@ -2,7 +2,7 @@
 
 # Overview
 
-The **GeoIP Fallback** is a simple Sitcore module that improves a current location resolving process with additional ability to fake your current location with a specific one for testing purpose. Usually, Sitecore uses the GeoIP service which works fine. But technically the Geo Data for unknown (in case a contact visits the site the first time) IP addresses would be available only for the second request to server. Potentially, it, can cause issues for us. For example, if we have configured some personalization rules based on a visitor country, they would be applied only for the second and further requests.
+The **GeoIP Fallback** is a simple Sitecore module that improves a current location resolving process with additional ability to fake your current location with a specific one for testing purpose. Usually, Sitecore uses the GeoIP service which works fine. But technically the Geo Data for unknown (in case a contact visits the site the first time) IP addresses would be available only for the second request to server. Potentially, it, can cause issues for us. For example, if we have configured some personalization rules based on a visitor country, they would be applied only for the second and further requests.
 
 ## Main features
 
